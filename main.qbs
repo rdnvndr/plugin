@@ -13,8 +13,8 @@ Product {
     property string copyright:   ""
 
     property string applicationPath: "bin/"
-    property string includePath:     "include/" + name + "/"
-    property string docPath:         "share/doc/" + name + "/"
+    property string includePath:     "include/plugin/"
+    property string docPath:         "share/doc/plugin/"
 
     Properties {
         condition: qbs.targetOS.contains("linux")
