@@ -11,13 +11,13 @@ PluginManager::PluginManager(QObject *parent) :
     QObject(parent)
 {
     m_instance = this;
-    m_settings = NULL;
-    m_lockFiles = NULL;
+    m_settings = nullptr;
+    m_lockFiles = nullptr;
 
     m_pluginsDir = QDir(qApp->applicationDirPath() + "/plugins/");
 }
 
-PluginManager *PluginManager::m_instance = 0;
+PluginManager *PluginManager::m_instance = nullptr;
 
 PluginManager *PluginManager::instance()
 {
@@ -26,7 +26,7 @@ PluginManager *PluginManager::instance()
 
 QObject *PluginManager::interfaceObject(QString interfaceName)
 {
-    return m_interfaces.value(interfaceName, NULL);
+    return m_interfaces.value(interfaceName, nullptr);
 }
 
 QList<QObject *> PluginManager::interfaceObjects(QString interfaceName)
