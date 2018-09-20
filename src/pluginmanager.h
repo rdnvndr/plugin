@@ -2,8 +2,10 @@
 #define PLUGINMANAGER_H
 
 #include <QObject>
+#include <QSettings>
+#include <QDir>
+
 #include "pluginglobal.h"
-#include "iplugin.h"
 
 class IPlugin;
 
@@ -37,7 +39,7 @@ public:
     //! Конструктор плагина
     /*! Производит инициализацию плагина при его создании
     */
-    explicit PluginManager(QObject *parent = 0);
+    explicit PluginManager(QObject *parent = nullptr);
 
     //! Деструктор плагина
     /*! Производит завершающие действия при удалении плагина
@@ -50,7 +52,7 @@ public:
     //! Получение объекта для указанного интерфейса с приведением типа
     template<typename T> T interfaceObject(QString interfaceName)
     {
-        return qobject_cast<T>(m_interfaces.value(interfaceName, NULL));
+        return qobject_cast<T>(m_interfaces.value(interfaceName, nullptr));
     }
 
     //! Получение объектов для указанного интерфейса

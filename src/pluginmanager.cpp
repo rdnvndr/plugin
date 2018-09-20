@@ -2,6 +2,7 @@
 
 #include <QRegExp>
 
+#include "iplugin.h"
 #include "clogging.h"
 
 namespace RTPTechGroup {
