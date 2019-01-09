@@ -42,7 +42,7 @@ private:
 tst_PluginManager::tst_PluginManager(QObject *parent)
 {
     Q_UNUSED(parent)
-    m_pluginLoadLog = NULL;
+    m_pluginLoadLog = nullptr;
 }
 
 tst_PluginManager::~tst_PluginManager()
@@ -228,4 +228,5 @@ void tst_PluginManager::settings()
     QCOMPARE(settings, m_pluginManager.settings());
 }
 QTEST_MAIN(tst_PluginManager)
+#include "tst_pluginmanager.moc"
 
