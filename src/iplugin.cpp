@@ -6,7 +6,7 @@ IPlugin::IPlugin(const QString& depInterfaces)
 {
     PluginManager *pluginManager = PluginManager::instance();
     m_depModulList = depInterfaces.split(" ");
-    foreach (const QString &depPlugin, depModulList()) {
+    for (const QString &depPlugin : depModulList()) {
         if (!depPlugin.isEmpty())
             pluginManager->nextLoadPlugins(depPlugin);
     }
@@ -17,7 +17,7 @@ IPlugin::IPlugin(const QString& depInterfaces)
 IPlugin::~IPlugin()
 {
     // NOTE: Возможно надо сделать на цикле for
-    foreach (IPlugin *plug,PluginManager::instance()->dependentPlugins(this)) {
+    for (IPlugin *plug : PluginManager::instance()->dependentPlugins(this)) {
         if (!PluginManager::instance()->dependentPlugins(this).isEmpty())
             if (plug)
                 delete plug;

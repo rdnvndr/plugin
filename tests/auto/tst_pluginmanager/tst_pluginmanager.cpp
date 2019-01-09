@@ -130,7 +130,7 @@ void tst_PluginManager::interfaceObjects()
     QStringList objectName;
     objectName << "tst_plugin3" << "tst_plugin4";
 
-    foreach (QObject *interfaceObject, listObject) {
+    for (QObject *interfaceObject : qAsConst(listObject)) {
         QVERIFY(objectName.removeOne(interfaceObject->metaObject()->className()));
     }
 }
@@ -147,10 +147,10 @@ void tst_PluginManager::dependentPlugins()
     dependentName4 << "tst_plugin1";
 
     QList<QObject *> plugins = m_pluginManager.interfaceObjects("IPlugin");
-    foreach (QObject *plugin, plugins) {
+    for (QObject *plugin : qAsConst(plugins)) {
         IPlugin *iplugin = qobject_cast<IPlugin *>(plugin);
         QList<IPlugin *> listDependent = m_pluginManager.dependentPlugins(iplugin);
-        foreach (IPlugin *pluginDependent, listDependent) {
+        for (IPlugin *pluginDependent : qAsConst(listDependent)) {
             if (iplugin->name() == QString("tst_plugin1")) {
                 QVERIFY(dependentName1.removeOne(pluginDependent->name()));
             } else if (iplugin->name() == QString("tst_plugin2")) {
@@ -182,10 +182,10 @@ void tst_PluginManager::dependPlugins()
     dependName4 << "tst_plugin3";
 
     QList<QObject *> plugins = m_pluginManager.interfaceObjects("IPlugin");
-    foreach (QObject *plugin, plugins) {
+    for (QObject *plugin : qAsConst(plugins)) {
         IPlugin *iplugin = qobject_cast<IPlugin *>(plugin);
         QList<IPlugin *> listDepend = m_pluginManager.dependPlugins(iplugin);
-        foreach (IPlugin *pluginDepend, listDepend) {
+        for (IPlugin *pluginDepend : qAsConst(listDepend)) {
             if (iplugin->name() == QString("tst_plugin1")) {
                 QVERIFY(dependName1.removeOne(pluginDepend->name()));
             } else if (iplugin->name() == QString("tst_plugin2")) {
@@ -228,5 +228,4 @@ void tst_PluginManager::settings()
     QCOMPARE(settings, m_pluginManager.settings());
 }
 QTEST_MAIN(tst_PluginManager)
-#include "tst_pluginmanager.moc"
 

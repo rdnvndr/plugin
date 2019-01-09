@@ -55,8 +55,8 @@ QList<IPlugin *> PluginManager::dependPlugins(IPlugin *plugin)
     QHash<QString, IPlugin *> pluginList;
 
     if (plugin)
-        foreach (const QString &depInterfaceName, plugin->depModulList())
-            foreach (QObject *objInterfacePlugin, interfaceObjects(depInterfaceName)) {
+        for (const QString &depInterfaceName : plugin->depModulList())
+            for (QObject *objInterfacePlugin : interfaceObjects(depInterfaceName)) {
                 IPlugin *interfacePlugin = qobject_cast<IPlugin *>(objInterfacePlugin);
                 if (interfacePlugin)
                     pluginList[objInterfacePlugin->objectName()] = interfacePlugin;
@@ -68,10 +68,10 @@ QList<IPlugin *> PluginManager::dependentPlugins(IPlugin *plugin)
 {
     QHash<QString, IPlugin *> pluginList;
 
-    foreach (QObject *objPlug, m_interfaces.values("IPlugin")) {
+    for (QObject *objPlug : m_interfaces.values("IPlugin")) {
         IPlugin *plug = qobject_cast<IPlugin *>(objPlug);
         if (plug && plug!=plugin)
-            foreach (IPlugin *interfacePlugin,dependPlugins(plug))
+            for (IPlugin *interfacePlugin : dependPlugins(plug))
                 if (plugin == interfacePlugin)
                     pluginList[objPlug->objectName()] = plug;
     }
@@ -139,7 +139,7 @@ bool PluginManager::loadPlugin(QString fileName, QString iid)
                     this, &PluginManager::removePlugin);
             plugin->setObjectName(plugin->metaObject()->className());
 
-            foreach (const QString &interface, corePlugin->interfaces())
+            for (const QString &interface : corePlugin->interfaces())
                 m_interfaces.insert(interface, plugin);
 
             emit loadedPlugin(plugin);
@@ -159,8 +159,8 @@ void PluginManager::setSettings(QSettings *s)
 
 void PluginManager::removePlugin(QObject *obj)
 {
-    foreach (const QString &interface, m_interfaces.keys())
-        foreach (QObject *plug,m_interfaces.values(interface))
+    for (const QString &interface : m_interfaces.keys())
+        for (QObject *plug : m_interfaces.values(interface))
             if (plug == obj) {
                 m_interfaces.remove(interface, plug);
                 qCDebug(lcPlugin) << tr("Очищен модуль ") + plug->objectName();
