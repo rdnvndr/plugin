@@ -1,9 +1,8 @@
-#ifndef TST_PLUGIN2GLOBAL_H
-#define TST_PLUGIN2GLOBAL_H
+#include <QtCore/QtGlobal>
+
 #if defined(TST_PLUGIN2_LIBRARY)
 #  define TST_PLUGIN2LIB Q_DECL_EXPORT
 #else
 #  define TST_PLUGIN2LIB Q_DECL_IMPORT
 #endif
-#endif // TST_PLUGIN2GLOBAL_H
 
