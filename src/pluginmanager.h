@@ -93,7 +93,6 @@ public:
     void setPluginsDir(const QDir &pluginsDir);
 
 signals:
-
     //! Сигнал о загрузке плагина
     void loadedPlugin(QObject *plugin);
 
@@ -108,7 +107,7 @@ private slots:
     void removePlugin(QObject *obj);
 
 private:
-
+    //! Структура файла с плагином
     struct FileList {
         QString filename;
         bool lock;

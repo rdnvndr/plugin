@@ -52,28 +52,30 @@ QList<IPlugin *> PluginManager::dependPlugins(IPlugin *plugin)
 {
     QHash<QString, IPlugin *> pluginList;
 
-    if (plugin)
-        for (const QString &depInterfaceName : plugin->depModulList())
+    if (plugin) {
+        for (const QString &depInterfaceName : plugin->depModulList()) {
             for (QObject *objInterfacePlugin : interfaceObjects(depInterfaceName)) {
                 IPlugin *interfacePlugin = qobject_cast<IPlugin *>(objInterfacePlugin);
                 if (interfacePlugin)
                     pluginList[objInterfacePlugin->objectName()] = interfacePlugin;
             }
+        }
+    }
     return pluginList.values();
 }
 
 QList<IPlugin *> PluginManager::dependentPlugins(IPlugin *plugin)
 {
-    QHash<QString, IPlugin *> pluginList;
+    QList<IPlugin *> pluginList;
 
     for (QObject *objPlug : m_interfaces.values("IPlugin")) {
-        IPlugin *dependPlugin = qobject_cast<IPlugin *>(objPlug);
-        if (dependPlugin != nullptr && dependPlugin != plugin) {
-            if (dependPlugins(dependPlugin).contains(plugin))
-                pluginList[objPlug->objectName()] = dependPlugin;
+        IPlugin *somePlugin = qobject_cast<IPlugin *>(objPlug);
+        if (somePlugin != nullptr && somePlugin != plugin) {
+            if (dependPlugins(somePlugin).contains(plugin))
+                pluginList.append(somePlugin);
         }
     }
-    return pluginList.values();
+    return pluginList;
 }
 
 bool PluginManager::loadPlugins()

@@ -15,11 +15,8 @@ IPlugin::IPlugin(const QString& depInterfaces)
 
 IPlugin::~IPlugin()
 {
-    // NOTE: Возможно надо сделать на цикле for
     for (IPlugin *plug : PluginManager::instance()->dependentPlugins(this)) {
-        if (!PluginManager::instance()->dependentPlugins(this).isEmpty())
-            if (plug)
-                delete plug;
+        delete plug;
     }
 }
 
