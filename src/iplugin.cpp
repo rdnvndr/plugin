@@ -10,8 +10,7 @@ IPlugin::IPlugin(const QString& depInterfaces)
         if (!depPlugin.isEmpty())
             pluginManager->nextLoadPlugins(depPlugin);
     }
-    if (pluginManager->settings())
-        setSettings(pluginManager->settings());
+    setSettings(pluginManager->settings());
 }
 
 IPlugin::~IPlugin()

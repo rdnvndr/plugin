@@ -13,7 +13,6 @@ PluginManager::PluginManager(QObject *parent) :
 {
     m_instance = this;
     m_settings = nullptr;
-    m_lockFiles = nullptr;
 
     m_pluginsDir = QDir(qApp->applicationDirPath() + "/plugins/");
 }
@@ -42,7 +41,6 @@ PluginManager::~PluginManager()
         delete plug;
         plug = interfaceObject("IPlugin");
     }
-    delete [] m_lockFiles;
 }
 
 QSettings *PluginManager::settings() const
@@ -69,11 +67,11 @@ QList<IPlugin *> PluginManager::dependentPlugins(IPlugin *plugin)
     QHash<QString, IPlugin *> pluginList;
 
     for (QObject *objPlug : m_interfaces.values("IPlugin")) {
-        IPlugin *plug = qobject_cast<IPlugin *>(objPlug);
-        if (plug && plug!=plugin)
-            for (IPlugin *interfacePlugin : dependPlugins(plug))
-                if (plugin == interfacePlugin)
-                    pluginList[objPlug->objectName()] = plug;
+        IPlugin *dependPlugin = qobject_cast<IPlugin *>(objPlug);
+        if (dependPlugin != nullptr && dependPlugin != plugin) {
+            if (dependPlugins(dependPlugin).contains(plugin))
+                pluginList[objPlug->objectName()] = dependPlugin;
+        }
     }
     return pluginList.values();
 }
@@ -86,11 +84,9 @@ bool PluginManager::loadPlugins()
                                + m_pluginsDir.absolutePath();
         return false;
     }
-    m_fileList = m_pluginsDir.entryList(QDir::Files);
 
-    qint32 count = m_fileList.count();
-    m_lockFiles = new bool[count];
-    for (qint32 i = 0; i < count; ++i) m_lockFiles[i] = false;
+    for (const QString &filename : m_pluginsDir.entryList(QDir::Files))
+        m_fileList.append({filename, false});
 
     nextLoadPlugins();
     emit endLoadingPlugins();
@@ -101,16 +97,14 @@ bool PluginManager::loadPlugins()
 bool PluginManager::nextLoadPlugins(QString iid)
 {
     bool result = false;
-    for (qint32 fileNum = m_fileList.count()-1; fileNum >= 0 ; --fileNum)
-    {
-        if (!m_lockFiles[fileNum]) {
-            m_lockFiles[fileNum] = true;
-            bool isLoad = loadPlugin(m_fileList.at(fileNum), iid);
-            if (!isLoad)
-                m_lockFiles[fileNum] = false;
-            result = result || isLoad;
+    for (FileList &file : m_fileList) {
+        if (!file.lock) {
+            file.lock = true;
+            file.lock = loadPlugin(file.filename, iid);
+            result = result || file.lock;
         }
     }
+
     return result;
 }
 

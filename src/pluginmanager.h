@@ -64,7 +64,7 @@ public:
     QList<IPlugin*> dependentPlugins(IPlugin *plugin);
 
     //! Получить от каких плагинов зависит
-    /*! Позволяет получить список плагинов от которых зависит указанный плвгин
+    /*! Позволяет получить список плагинов от которых зависит указанный плагин
      */
     QList<IPlugin *> dependPlugins(IPlugin *plugin);
 
@@ -109,6 +109,11 @@ private slots:
 
 private:
 
+    struct FileList {
+        QString filename;
+        bool lock;
+    };
+
     //! Экземпляр менеджера плагинов
     static PluginManager *m_instance;
 
@@ -125,10 +130,7 @@ private:
     QDir m_pluginsDir;
 
     //! Список файлов в каталоге плагина
-    QStringList m_fileList;
-
-    //! Множество заблокированных файлов
-    bool *m_lockFiles;
+    QList<FileList> m_fileList;
 };
 
 }}
