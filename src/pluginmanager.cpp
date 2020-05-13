@@ -24,12 +24,12 @@ PluginManager *PluginManager::instance()
     return m_instance;
 }
 
-QObject *PluginManager::interfaceObject(QString interfaceName)
+QObject *PluginManager::interfaceObject(const QString &interfaceName)
 {
     return m_interfaces.value(interfaceName, nullptr);
 }
 
-QList<QObject *> PluginManager::interfaceObjects(QString interfaceName)
+QList<QObject *> PluginManager::interfaceObjects(const QString &interfaceName)
 {
     return m_interfaces.values(interfaceName);
 }
@@ -88,7 +88,7 @@ bool PluginManager::loadPlugins()
     }
 
     for (const QString &filename : m_pluginsDir.entryList(QDir::Files))
-        m_fileList.append({filename, false});
+        m_fileList.emplace_back<FileList>({filename, false});
 
     nextLoadPlugins();
     emit endLoadingPlugins();
@@ -96,7 +96,7 @@ bool PluginManager::loadPlugins()
     return true;
 }
 
-bool PluginManager::nextLoadPlugins(QString iid)
+bool PluginManager::nextLoadPlugins(const QString &iid)
 {
     bool result = false;
     for (FileList &file : m_fileList) {
@@ -110,15 +110,15 @@ bool PluginManager::nextLoadPlugins(QString iid)
     return result;
 }
 
-bool PluginManager::loadPlugin(QString fileName, QString iid)
+bool PluginManager::loadPlugin(const QString &fileName, const QString &iid)
 {
-    fileName = m_pluginsDir.absoluteFilePath(fileName);
-    if (!QLibrary::isLibrary(fileName)) {
-        qCWarning(lcPlugin) << tr("Файл не является модулем ") + fileName;
+    QString filePath = m_pluginsDir.absoluteFilePath(fileName);
+    if (!QLibrary::isLibrary(filePath)) {
+        qCWarning(lcPlugin) << tr("Файл не является модулем ") + filePath;
         return false;
     }
 
-    QPluginLoader loader(fileName);
+    QPluginLoader loader(filePath);
 
     QString plugIid = loader.metaData().value("IID").toString();
     QRegExp checkIid("\\."+iid+"([\\.\\][0-9]+.?[0-9]*)?");

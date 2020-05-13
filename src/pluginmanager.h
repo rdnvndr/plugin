@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QSettings>
 #include <QDir>
+#include <vector>
 
 #include "pluginglobal.h"
 
@@ -47,16 +48,16 @@ public:
     ~PluginManager();
 
     //! Получение объекта для указанного интерфейса
-    QObject *interfaceObject(QString interfaceName);
+    QObject *interfaceObject(const QString &interfaceName);
 
     //! Получение объекта для указанного интерфейса с приведением типа
-    template<typename T> T interfaceObject(QString interfaceName)
+    template<typename T> T interfaceObject(const QString &interfaceName)
     {
         return qobject_cast<T>(m_interfaces.value(interfaceName, nullptr));
     }
 
     //! Получение объектов для указанного интерфейса
-    QList<QObject *> interfaceObjects(QString interfaceName);
+    QList<QObject *> interfaceObjects(const QString &interfaceName);
 
     //! Получить зависимые плагины
     /*! Позволяет получить список зависимых плагинов от указанного
@@ -75,10 +76,10 @@ public:
     bool loadPlugins();
 
     //! Загрузка указанного плагина
-    bool loadPlugin(QString fileName, QString iid = "");
+    bool loadPlugin(const QString &fileName, const QString &iid = "");
 
     //! Загрузка следующего плагина
-    bool nextLoadPlugins(QString iid = "");
+    bool nextLoadPlugins(const QString &iid = "");
 
     //! Устанавливает ссылку на объект для сохранения настроек
     void setSettings(QSettings *s);
@@ -109,8 +110,8 @@ private slots:
 private:
     //! Структура файла с плагином
     struct FileList {
-        QString filename;
-        bool lock;
+        QString filename; //! Имя файла
+        bool lock;        //! Флаг блокировки загрузки файла
     };
 
     //! Экземпляр менеджера плагинов
@@ -129,7 +130,7 @@ private:
     QDir m_pluginsDir;
 
     //! Список файлов в каталоге плагина
-    QList<FileList> m_fileList;
+    std::vector<FileList> m_fileList;
 };
 
 }}
