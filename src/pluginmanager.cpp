@@ -155,12 +155,15 @@ void PluginManager::setSettings(QSettings *s)
 
 void PluginManager::removePlugin(QObject *obj)
 {
-    for (const QString &interface : m_interfaces.keys())
-        for (QObject *plug : m_interfaces.values(interface))
-            if (plug == obj) {
-                m_interfaces.remove(interface, plug);
-                qCDebug(lcPlugin) << tr("Очищен модуль ") + plug->objectName();
-            }
+    for (auto it = m_interfaces.begin(); it != m_interfaces.end();) {
+        if (it.value() == obj) {
+            it = m_interfaces.erase(it);
+            qCDebug(lcPlugin) << tr("Очищен модуль ") + obj->objectName();
+        } else {
+            ++it;
+        }
+    }
+
     qCDebug(lcPlugin) << tr("Выгружен модуль ") + obj->objectName();
     emit removedPlugin(obj);
 }
